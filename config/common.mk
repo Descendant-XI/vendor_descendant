@@ -119,11 +119,16 @@ PRODUCT_PROPERTY_OVERRIDES += \
 WITH_EXFAT ?= true
 ifeq ($(WITH_EXFAT),true)
 TARGET_USES_EXFAT := true
+# Filesystems tools
 PRODUCT_PACKAGES += \
     mount.exfat \
     fsck.exfat \
     mkfs.exfat
 endif
+
+# Live Display
+PRODUCT_COPY_FILES += \
+    vendor/descendant/config/permissions/privapp-permissions-livedisplay.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-livedisplay.xml
 
 # Markup libs
 PRODUCT_COPY_FILES += \
