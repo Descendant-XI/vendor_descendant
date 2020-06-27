@@ -158,3 +158,8 @@ include vendor/descendant/config/packages.mk
 
 # Branding
 include vendor/descendant/config/branding.mk
+
+# Offline charger
+PRODUCT_PACKAGES += \
+    charger_res_images \
+    product_charger_res_images
