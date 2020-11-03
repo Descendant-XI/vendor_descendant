@@ -168,6 +168,10 @@ include vendor/themes/common.mk
 PRODUCT_PACKAGES += \
     SoundPicker
 
+# SystemUI plugins
+PRODUCT_PACKAGES += \
+    QuickAccessWallet
+
 #Descendant AOD
 PRODUCT_PACKAGES += \
     DescendantAOD
