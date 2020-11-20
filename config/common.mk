@@ -105,6 +105,10 @@ ifeq ($(TARGET_USE_LATEST_CLANG),true)
     TARGET_KERNEL_CLANG_VERSION := $(shell grep -v based prebuilts/clang/host/$(HOST_OS)-x86/*/AndroidVersion.txt | sort | tail -n 1 | cut -d : -f 2)
 endif
 
+# Copy all custom init rc files
+$(foreach f,$(wildcard vendor/descendant/prebuilt/common/etc/init/*.rc),\
+    $(eval PRODUCT_COPY_FILES += $(f):$(TARGET_COPY_OUT_SYSTEM)/etc/init/$(notdir $f)))
+
 # Disable Rescue Party
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.disable_rescue=true
