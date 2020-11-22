@@ -1,5 +1,5 @@
 # Bring in Qualcomm helper macros
-include vendor/potato/build/core/qcom_utils.mk
+include vendor/descendant/build/core/qcom_utils.mk
 
 # Set device-specific HALs into project pathmap
 define set-device-specific-path

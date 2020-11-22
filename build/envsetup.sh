@@ -1,6 +1,6 @@
-function __print_potato_functions_help() {
+function __print_descendant_functions_help() {
 cat <<EOF
-Additional PotatoROM functions:
+Additional DescendantROM functions:
 - cout:            Changes directory to out.
 - mmp:             Builds all of the modules in the current directory and pushes them to the device.
 - mmap:            Builds all of the modules in the current directory and its dependencies, then pushes the package to the device.
@@ -57,7 +57,7 @@ function brunch()
 {
     breakfast $*
     if [ $? -eq 0 ]; then
-        mka potato
+        mka descendant
     else
         echo "No such item in brunch menu. Try 'breakfast'"
         return 1
@@ -69,9 +69,9 @@ function breakfast()
 {
     target=$1
     local variant=$2
-    POTATO_DEVICES_ONLY="true"
+    DESCENDANT_DEVICES_ONLY="true"
     unset LUNCH_MENU_CHOICES
-    for f in `/bin/ls vendor/potato/vendorsetup.sh 2> /dev/null`
+    for f in `/bin/ls vendor/descendant/vendorsetup.sh 2> /dev/null`
         do
             echo "including $f"
             . $f
@@ -87,12 +87,12 @@ function breakfast()
             # A buildtype was specified, assume a full device name
             lunch $target
         else
-            # This is probably just the Potato model name
+            # This is probably just the Descendant model name
             if [ -z "$variant" ]; then
                 variant="userdebug"
             fi
 
-            lunch potato_$target-$variant
+            lunch descendant_$target-$variant
         fi
     fi
     return $?
@@ -103,7 +103,7 @@ alias bib=breakfast
 function eat()
 {
     if [ "$OUT" ] ; then
-        ZIPPATH=`ls -tr "$OUT"/potato-*.zip | tail -1`
+        ZIPPATH=`ls -tr "$OUT"/descendant-*.zip | tail -1`
         if [ ! -f $ZIPPATH ] ; then
             echo "Nothing to eat"
             return 1
@@ -117,7 +117,7 @@ function eat()
             done
             echo "Device Found.."
         fi
-        if (adb shell getprop ro.potato.device | grep -q "$POTATO_BUILD"); then
+        if (adb shell getprop ro.descendant.device | grep -q "$DESCENDANT_BUILD"); then
             # if adbd isn't root we can't write to /cache/recovery/
             adb root
             sleep 1
@@ -133,7 +133,7 @@ EOF
             fi
             rm /tmp/command
         else
-            echo "The connected device does not appear to be $POTATO_BUILD, run away!"
+            echo "The connected device does not appear to be $DESCENDANT_BUILD, run away!"
         fi
         return $?
     else
@@ -260,14 +260,14 @@ function dddclient()
 function gerritpush()
 {
 
-    GERRIT_URL=review.potatoproject.co;
+    GERRIT_URL=review.descendantproject.co;
     DEFAULT_BRANCH=croquette-release;
     PROJECT_PREFIX=;
     ref=for;
 
     local PROJECT_EXCLUSIONS=(
         "device_qcom_sepolicy"
-        "device_potato_sepolicy"
+        "device_descendant_sepolicy"
     );
 
     while getopts "tdb" OPTION; do
@@ -302,9 +302,9 @@ function gerritpush()
     fi
     if (echo $PROJECT | grep -qv "^device") || [[ "${PROJECT_EXCLUSIONS[@]}" =~ "$PROJECT" ]]
     then
-      local PFX="PotatoProject/";
+      local PFX="DescendantProject/";
     else
-      local PFX="PotatoDevices/";
+      local PFX="DescendantDevices/";
     fi
     cd $c;
     if [[ -z "${GERRIT_USER}" ]]; then
@@ -404,7 +404,7 @@ function installboot()
     sleep 1
     adb wait-for-online shell mount /system 2>&1 > /dev/null
     adb wait-for-online remount
-    if (adb shell getprop ro.potato.device | grep -q "$POTATO_BUILD");
+    if (adb shell getprop ro.descendant.device | grep -q "$DESCENDANT_BUILD");
     then
         adb push $OUT/boot.img /cache/
         if [ -e "$OUT/system/lib/modules/*" ];
@@ -419,7 +419,7 @@ function installboot()
         adb shell rm -rf /cache/boot.img
         echo "Installation complete."
     else
-        echo "The connected device does not appear to be $POTATO_BUILD, run away!"
+        echo "The connected device does not appear to be $DESCENDANT_BUILD, run away!"
     fi
 }
 
@@ -453,14 +453,14 @@ function installrecovery()
     sleep 1
     adb wait-for-online shell mount /system 2>&1 >> /dev/null
     adb wait-for-online remount
-    if (adb shell getprop ro.potato.device | grep -q "$POTATO_BUILD");
+    if (adb shell getprop ro.descendant.device | grep -q "$DESCENDANT_BUILD");
     then
         adb push $OUT/recovery.img /cache/
         adb shell dd if=/cache/recovery.img of=$PARTITION
         adb shell rm -rf /cache/recovery.img
         echo "Installation complete."
     else
-        echo "The connected device does not appear to be $POTATO_BUILD, run away!"
+        echo "The connected device does not appear to be $DESCENDANT_BUILD, run away!"
     fi
 }
 
@@ -493,8 +493,8 @@ function makerecipe() {
     if [ "$REPO_REMOTE" = "github" ]
     then
         pwd
-        potatoremote
-        git push potato HEAD:refs/heads/'$1'
+        descendantremote
+        git push descendant HEAD:refs/heads/'$1'
     fi
     '
 }
@@ -505,7 +505,7 @@ function mka() {
 
 function mergeaosptag()
 {
-  username=PotatoProject
+  username=DescendantProject
   default_branch=croquette-release
 
   for var in "$@"
@@ -516,21 +516,21 @@ function mergeaosptag()
   done
 
   whitelist=(
-    device_potato_sepolicy
+    device_descendant_sepolicy
     device_qcom_sepolicy
     external_json-c
     external_sony_boringssl-compat
     hardware_libhardware_legacy
-    hardware_potato_interfaces
+    hardware_descendant_interfaces
     hardware_qcom_power
     manifest
     packages_apps_DUI
     packages_apps_Lean
     packages_apps_Wedges
-    vendor_potato
+    vendor_descendant
     prebuilts_clang_host_linux-x86
     website
-    PotatoBot_tg
+    DescendantBot_tg
   )
 
   whitelist_detected=();
@@ -602,7 +602,7 @@ function cmka() {
     if [ ! -z "$1" ]; then
         for i in "$@"; do
             case $i in
-                potato|otapackage|systemimage)
+                descendant|otapackage|systemimage)
                     mka installclean
                     mka $i
                     ;;
@@ -631,7 +631,7 @@ function deleteOTA() {
     curl --header "Authorization: Token $OTA_API_USER_TOKEN" \
         --header "Content-Type: application/json" \
         --request DELETE \
-        https://api.potatoproject.co/api/ota/builds/$1/;
+        https://api.descendantproject.co/api/ota/builds/$1/;
 }
 
 function pushOTA() {
@@ -651,18 +651,18 @@ function pushOTA() {
     done
 
     build_date=$(grep ro\.build\.date\.utc $OUT/system/build.prop | cut -d= -f2);
-    device=$(grep ro\.potato\.device $OUT/system/build.prop | cut -d= -f2);
-    file=$(ls -t ${OUT}/potato_$device-10* | sed -n 2p);
+    device=$(grep ro\.descendant\.device $OUT/system/build.prop | cut -d= -f2);
+    file=$(ls -t ${OUT}/descendant_$device-10* | sed -n 2p);
     md5=$(md5sum $file | awk '{ print $1 }');
     build_type=$(echo $BUILD_TYPE | tr '[:upper:]' '[:lower:]');
     size=$(stat -c%s $file);
-    version=$(grep ro\.potato\.vernum $OUT/system/build.prop | cut -d= -f2);
+    version=$(grep ro\.descendant\.vernum $OUT/system/build.prop | cut -d= -f2);
     if [ -z $version ]; then
-        version=$(grep ro\.potato\.vernum $OUT/vendor/build.prop | cut -d= -f2)
+        version=$(grep ro\.descendant\.vernum $OUT/vendor/build.prop | cut -d= -f2)
     fi
-    dish=$(grep ro\.potato\.dish $OUT/system/build.prop | cut -d= -f2);
+    dish=$(grep ro\.descendant\.dish $OUT/system/build.prop | cut -d= -f2);
     if [ -z $dish ]; then
-        dish=$(grep ro\.potato\.dish $OUT/vendor/build.prop | cut -d= -f2)
+        dish=$(grep ro\.descendant\.dish $OUT/vendor/build.prop | cut -d= -f2)
     fi
     echo $dish
     notes=""
@@ -684,7 +684,7 @@ function pushOTA() {
         --header "Content-Type: application/json" \
         --request POST \
         --data "$data" \
-        https://api.potatoproject.co/api/ota/builds/;
+        https://api.descendantproject.co/api/ota/builds/;
 }
 
 function repolastsync() {
@@ -736,7 +736,7 @@ function dopush()
         echo "Device Found."
     fi
 
-    if (adb shell getprop ro.potato.device | grep -q "$POTATO_BUILD") || [ "$FORCE_PUSH" = "true" ];
+    if (adb shell getprop ro.descendant.device | grep -q "$DESCENDANT_BUILD") || [ "$FORCE_PUSH" = "true" ];
     then
     # retrieve IP and PORT info if we're using a TCP connection
     TCPIPPORT=$(adb devices \
@@ -854,7 +854,7 @@ EOF
     rm -f $OUT/.log
     return 0
     else
-        echo "The connected device does not appear to be $POTATO_BUILD, run away!"
+        echo "The connected device does not appear to be $DESCENDANT_BUILD, run away!"
     fi
 }
 
@@ -867,13 +867,13 @@ alias cmkap='dopush cmka'
 
 function repopick() {
     T=$(gettop)
-    $T/vendor/potato/build/tools/repopick.py $@
+    $T/vendor/descendant/build/tools/repopick.py $@
 }
 
 function fixup_common_out_dir() {
     common_out_dir=$(get_build_var OUT_DIR)/target/common
     target_device=$(get_build_var TARGET_DEVICE)
-    if [ ! -z $POTATO_FIXUP_COMMON_OUT ]; then
+    if [ ! -z $DESCENDANT_FIXUP_COMMON_OUT ]; then
         if [ -d ${common_out_dir} ] && [ ! -L ${common_out_dir} ]; then
             mv ${common_out_dir} ${common_out_dir}-${target_device}
             ln -s ${common_out_dir}-${target_device} ${common_out_dir}
@@ -898,7 +898,7 @@ if [ -d $(gettop)/prebuilts/snapdragon-llvm/toolchains ]; then
             export SDCLANG=true
             export SDCLANG_PATH=$(gettop)/prebuilts/snapdragon-llvm/toolchains/llvm-Snapdragon_LLVM_for_Android_4.0/prebuilt/linux-x86_64/bin
             export SDCLANG_PATH_2=$(gettop)/prebuilts/snapdragon-llvm/toolchains/llvm-Snapdragon_LLVM_for_Android_4.0/prebuilt/linux-x86_64/bin
-            export SDCLANG_LTO_DEFS=$(gettop)/vendor/potato/build/core/sdllvm-lto-defs.mk
+            export SDCLANG_LTO_DEFS=$(gettop)/vendor/descendant/build/core/sdllvm-lto-defs.mk
             ;;
     esac
 fi

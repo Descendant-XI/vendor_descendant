@@ -1,5 +1,5 @@
 # Bring in Qualcomm helper macros
-include vendor/potato/build/core/qcom_utils.mk
+include vendor/descendant/build/core/qcom_utils.mk
 
 # Platform names
 MSMNILE := msmnile #SM8150
@@ -93,4 +93,4 @@ endif
 QCOM_SOONG_NAMESPACE ?= hardware/qcom-caf/$(QCOM_HARDWARE_VARIANT)
 PRODUCT_SOONG_NAMESPACES += $(QCOM_SOONG_NAMESPACE)
 
-include vendor/potato/build/core/qcom_target.mk
+include vendor/descendant/build/core/qcom_target.mk

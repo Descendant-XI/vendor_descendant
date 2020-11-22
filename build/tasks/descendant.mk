@@ -14,14 +14,14 @@
 # limitations under the License.
 
 # -----------------------------------------------------------------
-# Potato OTA update package
+# Descendant OTA update package
 
-POTATO_TARGET_PACKAGE := $(PRODUCT_OUT)/$(POTATO_VERSION).zip
+DESCENDANT_TARGET_PACKAGE := $(PRODUCT_OUT)/$(DESCENDANT_VERSION).zip
 
-.PHONY: potato
-potato: $(INTERNAL_OTA_PACKAGE_TARGET)
-	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(POTATO_TARGET_PACKAGE)
-	@echo "Package Complete: $(POTATO_TARGET_PACKAGE)" >&2
+.PHONY: descendant
+descendant: $(INTERNAL_OTA_PACKAGE_TARGET)
+	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(DESCENDANT_TARGET_PACKAGE)
+	@echo "Package Complete: $(DESCENDANT_TARGET_PACKAGE)" >&2
 	echo "";
-	cat build/make/potato_ascii_logo;
+	cat build/make/descendant_ascii_logo;
 	echo "";

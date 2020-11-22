@@ -1,12 +1,12 @@
-GET_VERSION := vendor/potato/build/tools/getversion.py
-POTATO_VERNUM := $(shell $(GET_VERSION) vernum)
-POTATO_DISH := $(shell $(GET_VERSION) dish)
+GET_VERSION := vendor/descendant/build/tools/getversion.py
+DESCENDANT_VERNUM := $(shell $(GET_VERSION) vernum)
+DESCENDANT_DISH := $(shell $(GET_VERSION) dish)
 BUILD_TYPE := $(shell $(GET_VERSION) buildtype)
-POTATO_BRANDING_VERSION := $(BUILD_TYPE)
-POTATO_VERSION := $(shell $(GET_VERSION) version)
+DESCENDANT_BRANDING_VERSION := $(BUILD_TYPE)
+DESCENDANT_VERSION := $(shell $(GET_VERSION) version)
 ifeq ($(filter-out Official Mashed, $(BUILD_TYPE)),)
     PRODUCT_PACKAGES += \
-        PotatoCenter
+        DescendantCenter
 endif
 
 ifneq ($(SIGNING_KEYS),)

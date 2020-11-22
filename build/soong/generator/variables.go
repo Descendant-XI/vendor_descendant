@@ -6,12 +6,12 @@ import (
 	"android/soong/android"
 )
 
-func potatoExpandVariables(ctx android.ModuleContext, in string) string {
-	potatoVars := ctx.Config().VendorConfig("potatoVarsPlugin")
+func descendantExpandVariables(ctx android.ModuleContext, in string) string {
+	descendantVars := ctx.Config().VendorConfig("descendantVarsPlugin")
 
 	out, err := android.Expand(in, func(name string) (string, error) {
-		if potatoVars.IsSet(name) {
-			return potatoVars.String(name), nil
+		if descendantVars.IsSet(name) {
+			return descendantVars.String(name), nil
 		}
 		// This variable is not for us, restore what the original
 		// variable string will have looked like for an Expand

@@ -2,5 +2,5 @@
 
 <!-- POSP apps base feature -->
 <permissions>
-    <feature name="co.potatoproject.posp" />
+    <feature name="org.descendant.posp" />
 </permissions>

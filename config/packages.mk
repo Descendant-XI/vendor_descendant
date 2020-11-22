@@ -13,12 +13,12 @@ PRODUCT_PACKAGES += \
 
 # Fries
 #PRODUCT_PACKAGES += \
-#    PotatoFries
+#    DescendantFries
 
 # ThemePicker
 PRODUCT_PACKAGES += \
     ThemePicker \
-    PotatoThemesStub
+    DescendantThemesStub
 
 # Charger
 PRODUCT_PACKAGES += \
