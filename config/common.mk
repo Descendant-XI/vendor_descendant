@@ -152,3 +152,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(LOCAL_PATH)/../fonts/ttf,$(TARGET_COPY_OUT_PRODUCT)/fonts)
 PRODUCT_COPY_FILES += \
     vendor/descendant/fonts/ttf/fonts_customization.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/fonts_customization.xml
+
+# Navigation
+PRODUCT_PACKAGES += \
+    GesturalNavigationOverlayLong \
+    GesturalNavigationOverlayMedium \
+    GesturalNavigationOverlayHidden

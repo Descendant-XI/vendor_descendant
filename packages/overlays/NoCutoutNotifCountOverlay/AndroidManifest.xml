@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.descendant.overlay.hidecutout.notif.count"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <overlay android:targetPackage="com.android.systemui" android:priority="1" />
+
+    <application android:label="@string/display_cutout_emulation_notif_count_overlay" android:hasCode="false"/>
+</manifest>
