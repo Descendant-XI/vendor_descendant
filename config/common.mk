@@ -158,3 +158,6 @@ PRODUCT_PACKAGES += \
     GesturalNavigationOverlayLong \
     GesturalNavigationOverlayMedium \
     GesturalNavigationOverlayHidden
+
+#Build themes
+include vendor/themes/common.mk
