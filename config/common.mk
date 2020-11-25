@@ -24,13 +24,11 @@ PRODUCT_COPY_FILES += \
 endif
 
 # Bootanimation
-ifeq ($(TARGET_BOOTANIM_LOW_RES), true)
 PRODUCT_COPY_FILES += \
-    vendor/descendant-prebuilts/bootanimation/bootanimation-half.zip:system/media/bootanimation.zip
-else
-PRODUCT_COPY_FILES += \
-    vendor/descendant-prebuilts/bootanimation/bootanimation.zip:system/media/bootanimation.zip
-endif
+    vendor/descendant/prebuilt/common/bootanimation/bootanimation.zip:$(TARGET_COPY_OUT_SYSTEM)/media/bootanimation.zip
+
+#Prebuilts
+include vendor/descendant/prebuilt/pre.mk
 
 PRODUCT_PROPERTY_OVERRIDES += \
     keyguard.no_require_sim=true \
