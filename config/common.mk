@@ -130,24 +130,10 @@ PRODUCT_COPY_FILES += \
     vendor/descendant/prebuilt/common/lib/libsketchology_native.so:system/lib/libsketchology_native.so \
     vendor/descendant/prebuilt/common/lib64/libsketchology_native.so:system/lib64/libsketchology_native.so
 
-# GSans font
-include vendor/descendant/config/fonts.mk
-
 # We modify several neverallows, so let the build proceed
 ifneq ($(TARGET_BUILD_VARIANT),user)
     SELINUX_IGNORE_NEVERALLOWS := true
 endif
-
-# Fonts
-PRODUCT_COPY_FILES += \
-   vendor/descendant/prebuilt/common/fonts/GoogleSans-Regular.ttf:system/fonts/GoogleSans-Regular.ttf \
-   vendor/descendant/prebuilt/common/fonts/GoogleSans-Medium.ttf:system/fonts/GoogleSans-Medium.ttf \
-   vendor/descendant/prebuilt/common/fonts/GoogleSans-MediumItalic.ttf:system/fonts/GoogleSans-MediumItalic.ttf \
-   vendor/descendant/prebuilt/common/fonts/GoogleSans-Italic.ttf:system/fonts/GoogleSans-Italic.ttf \
-   vendor/descendant/prebuilt/common/fonts/GoogleSans-Bold.ttf:system/fonts/GoogleSans-Bold.ttf \
-   vendor/descendant/prebuilt/common/fonts/GoogleSans-BoldItalic.ttf:system/fonts/GoogleSans-BoldItalic.ttf
-
-ADDITIONAL_FONTS_FILE := vendor/descendant/prebuilt/common/fonts/google-sans.xml
 
 # Overlays
 PRODUCT_PACKAGE_OVERLAYS += vendor/descendant/overlay/common
@@ -163,3 +149,8 @@ include vendor/descendant/config/branding.mk
 PRODUCT_PACKAGES += \
     charger_res_images \
     product_charger_res_images
+
+# Fonts
+PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(LOCAL_PATH)/../fonts/ttf,$(TARGET_COPY_OUT_PRODUCT)/fonts)
+PRODUCT_COPY_FILES += \
+    vendor/descendant/fonts/ttf/fonts_customization.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/fonts_customization.xml
