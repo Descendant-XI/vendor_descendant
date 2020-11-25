@@ -59,11 +59,10 @@ def main():
     data['product'] = target_product
     data['device'] = target_product.split("_")[1]
     data['date'] = date
-    data['verxi'] = 'x'
     if query == 'buildtype':
         print(get_build_type(target_product))
     elif query == 'version':
-        print("{}-{}-{}-{}.v{}.{}".format(data['product'], data['verxi'], date,get_build_type(target_product)))
+        print("{}-{}-{}-{}".format(data['product'], "XI", date,get_build_type(target_product)))
     else:
         print(data[query] if query in data.keys() else '')
 
