@@ -161,3 +161,7 @@ PRODUCT_PACKAGES += \
 
 #Build themes
 include vendor/themes/common.mk
+
+#Sound Picker
+PRODUCT_PACKAGES += \
+    SoundPicker
