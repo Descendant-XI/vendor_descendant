@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="drawable" name="theme_wallpaper_default">@drawable/default_wallpaper</item>
+    <item type="drawable" name="theme_wallpaper_thumbnail_default">@drawable/default_wallpaper_prev</item>
+</resources>
