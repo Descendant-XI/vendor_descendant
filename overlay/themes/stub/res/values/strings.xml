@@ -23,5 +23,5 @@
     <string name="theme_title_default">@string/theme_name_default</string>
     <string name="theme_wallpaper_title_default">Default Descendant Wallpaper</string>
     <string name="theme_wallpaper_attribution_default">Design by IG: @sketchomale</string>
-
+    <string name="app_name">Descendant Stub</string>
 </resources>
