@@ -1,8 +1,7 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # Copyright (C) 2012-2013, The CyanogenMod Project
 # Copyright (C) 2012-2015, SlimRoms Project
 # Copyright (C) 2016-2017, AOSiP
-# Copyright (C) 2018, The Descendant Open Sauce Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,13 +41,12 @@ except ImportError:
     urllib.request = urllib2
 
 DEBUG = False
-default_manifest = ".repo/manifest.xml"
 
-custom_local_manifest = ".repo/local_manifests/descendant_manifest.xml"
-custom_default_revision = "croquette-release"
+custom_local_manifest = ".repo/local_manifests/descendant.xml"
+custom_default_revision =  os.getenv('ROOMSERVICE_DEFAULT_BRANCH', 'eleven')
 custom_dependencies = "descendant.dependencies"
 org_manifest = "devices"  # leave empty if org is provided in manifest
-org_display = "DescendantDevices"  # needed for displaying
+org_display = "Descendant-Devices"  # needed for displaying
 
 github_auth = None
 
@@ -96,48 +94,12 @@ def indent(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
-
 def load_manifest(manifest):
     try:
         man = ElementTree.parse(manifest).getroot()
     except (IOError, ElementTree.ParseError):
         man = ElementTree.Element("manifest")
     return man
-
-
-def get_default(manifest=None):
-    m = manifest or load_manifest(default_manifest)
-    d = m.findall('default')[0]
-    return d
-
-
-def get_remote(manifest=None, remote_name=None):
-    m = manifest or load_manifest(default_manifest)
-    if not remote_name:
-        remote_name = get_default(manifest=m).get('remote')
-    remotes = m.findall('remote')
-    for remote in remotes:
-        if remote_name == remote.get('name'):
-            return remote
-
-
-def get_revision(manifest=None, p="build"):
-    return custom_default_revision
-    m = manifest or load_manifest(default_manifest)
-    project = None
-    for proj in m.findall('project'):
-        if proj.get('path').strip('/') == p:
-            project = proj
-            break
-    revision = project.get('revision')
-    if revision:
-        return revision.replace('refs/heads/', '').replace('refs/tags/', '')
-    remote = get_remote(manifest=m, remote_name=project.get('remote'))
-    revision = remote.get('revision')
-    if not revision:
-        return custom_default_revision
-    return revision.replace('refs/heads/', '').replace('refs/tags/', '')
-
 
 def get_from_manifest(device_name):
     if os.path.exists(custom_local_manifest):
@@ -150,7 +112,8 @@ def get_from_manifest(device_name):
 
 
 def is_in_manifest(project_path):
-    for local_path in load_manifest(custom_local_manifest).findall("project"):
+    man = load_manifest(custom_local_manifest)
+    for local_path in man.findall("project"):
         if local_path.get("path") == project_path:
             return True
     return False
@@ -162,16 +125,16 @@ def add_to_manifest(repos, fallback_branch=None):
     for repo in repos:
         repo_name = repo['repository']
         repo_path = repo['target_path']
-        if 'branch' in repo:
-            repo_branch=repo['branch']
-        else:
-            repo_branch=custom_default_revision
-        if 'remote' in repo:
-            repo_remote=repo['remote']
-        elif "/" not in repo_name:
-            repo_remote=org_manifest
-        elif "/" in repo_name:
-            repo_remote="github"
+	if 'branch' in repo:
+	    repo_branch=repo['branch']
+	else:
+	    repo_branch=custom_default_revision
+	if 'remote' in repo:
+	    repo_remote=repo['remote']
+	elif "/" not in repo_name:
+	    repo_remote=org_manifest
+	elif "/" in repo_name:
+	    repo_remote="github"
 
         if is_in_manifest(repo_path):
             print('already exists: %s' % repo_path)
@@ -186,6 +149,10 @@ def add_to_manifest(repos, fallback_branch=None):
                     "name": "%s" % repo_name}
         )
 
+        clone_depth = os.getenv('ROOMSERVICE_CLONE_DEPTH')
+        if clone_depth:
+            project.set('clone-depth', clone_depth)
+
         if repo_branch is not None:
             project.set('revision', repo_branch)
         elif fallback_branch:
@@ -194,9 +161,9 @@ def add_to_manifest(repos, fallback_branch=None):
             project.set('revision', fallback_branch)
         else:
             print("Using default branch for %s" % repo_name)
-        if 'clone-depth' in repo:
-            print("Setting clone-depth to %s for %s" % (repo['clone-depth'], repo_name))
-            project.set('clone-depth', repo['clone-depth'])
+	if 'clone-depth' in repo:
+	    print("Setting clone-depth to %s for %s" % (repo['clone-depth'], repo_name))
+	    project.set('clone-depth', repo['clone-depth'])
         lm.append(project)
 
     indent(lm)
@@ -224,7 +191,7 @@ def fetch_dependencies(repo_path, fallback_branch=None):
             dependencies = json.load(dep_f)
     else:
         dependencies = {}
-        debug('Dependencies file not found, bailing out.')
+        print('%s has no additional dependencies.' % repo_path)
 
     fetch_list = []
     syncable_repos = []
@@ -232,8 +199,7 @@ def fetch_dependencies(repo_path, fallback_branch=None):
     for dependency in dependencies:
         if not is_in_manifest(dependency['target_path']):
             if not dependency.get('branch'):
-                dependency['branch'] = (get_revision() or
-                                        custom_default_revision)
+                dependency['branch'] = custom_default_revision
 
             fetch_list.append(dependency)
             syncable_repos.append(dependency['target_path'])
@@ -267,28 +233,12 @@ def detect_revision(repo):
     add_auth(githubreq)
     result = json.loads(urllib.request.urlopen(githubreq).read().decode())
 
-    calc_revision = get_revision()
-    print("Calculated revision: %s" % calc_revision)
-
-    if has_branch(result, calc_revision):
-        return calc_revision
-
-    fallbacks = os.getenv('ROOMSERVICE_BRANCHES', '').split()
-    for fallback in fallbacks:
-        if has_branch(result, fallback):
-            print("Using fallback branch: %s" % fallback)
-            return fallback
+    print("Calculated revision: %s" % custom_default_revision)
 
     if has_branch(result, custom_default_revision):
-        print("Falling back to custom revision: %s"
-              % custom_default_revision)
         return custom_default_revision
 
-    print("Branches found:")
-    for branch in result:
-        print(branch['name'])
-    print("Use the ROOMSERVICE_BRANCHES environment variable to "
-          "specify a list of fallback branches.")
+    print("Branch %s not found" % custom_default_revision)
     sys.exit()
 
 
