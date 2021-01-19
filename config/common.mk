@@ -170,5 +170,12 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     DescendantAOD
 
+# Enable blurs based on targets
+ifeq ($(TARGET_SUPPORTS_BLUR),true)
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.surface_flinger.supports_background_blur=1 \
+    ro.sf.blurs_are_expensive=1
+endif
+
 #Build fonts
 include vendor/descendant/config/fonts.mk
