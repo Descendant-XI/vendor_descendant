@@ -20,11 +20,11 @@ def get_build_type(target_product):
         with open("vendor/descendant/descendant.devices", "r") as read_file:
             devices = read_file.read().splitlines()
             if current_device not in devices:
-                build_type = 'Community'
+                build_type = 'Unofficial'
             else:
                 build_type = build_type.title()
     else:
-        build_type = "Community"
+        build_type = "Unofficial"
     return build_type
 
 
