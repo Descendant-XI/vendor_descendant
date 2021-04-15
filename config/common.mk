@@ -187,6 +187,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     DescendantAOD
 
+# StichImage
+PRODUCT_PACKAGES += \
+    StitchImage
+
 # Enable blurs based on targets
 ifeq ($(TARGET_SUPPORTS_BLUR),true)
 PRODUCT_PRODUCT_PROPERTIES += \
