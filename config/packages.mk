@@ -70,4 +70,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     WeatherClient
 
+# Gapps
+ifeq ($(WITH_GAPPS), true)
+    WITH_GMS := true
+    $(call inherit-product, vendor/gapps/common/common-vendor.mk)
+endif
+
 -include packages/apps/Plugins/plugins.mk
